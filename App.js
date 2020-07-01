@@ -1,5 +1,5 @@
 import  React, {useState, useEffect} from 'react';
-import { Text, View, StyleSheet, Image, ActivityIndicator} from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Image, ActivityIndicator} from 'react-native';
 import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -31,10 +31,11 @@ export default function App() {
               left: 0,
               right: 0,
               top: 0,
-              height: 1000,
+              height: 1200,
             }}
           />
     {!weatherData ? <ActivityIndicator size='large' color='#0000ff' /> : (
+      <ScrollView>
       <View style={styles.container}>
             <Text style={styles.header}> 
                 {weatherData.name}
@@ -54,6 +55,7 @@ export default function App() {
                 Влажность {weatherData.main.humidity} %
             </Text>
         </View>
+        </ScrollView>
      )}
     </View>
   );
@@ -70,6 +72,8 @@ const styles = StyleSheet.create({
   borderRadius: 5,
   padding: 10,
   margin: 20,
+  marginTop: '50%',
+  marginBottom: '50%',
   },
   
   tinyLogo: {
