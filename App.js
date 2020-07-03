@@ -8,9 +8,7 @@ export default function App() {
   
   const [weatherData, setWeatherData] = useState(null);
   const [response, setResponse] = useState('');
-  console.log(response)
 
-  
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function showPosition(position) {
         const lat = position.coords.latitude;
@@ -20,14 +18,7 @@ export default function App() {
   
     fetch(url)
     .then(res => res.json())
-    .then(data => {
-      
-      
-    
-        setWeatherData(data)
-    
-      
-    })
+    .then(data => setWeatherData(data))
   })}, []); // get current weather
   
   const returnToStart = () => {
@@ -47,108 +38,83 @@ export default function App() {
   
   const weatherCheck = (submit) => {
     const location = submit.nativeEvent.text
-    console.log(submit.nativeEvent.text)
     setTimeout(() => {
       const url = `http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=7c8e042c09a447200763fa7fff3a0e64&units=metric&lang=ru`;
     
       fetch(url)
       .then(res => res.json())
       .then(data => setWeatherData(data))
-    }, 1000);
-
-      
-         // Set timeout for better UI
+    }, 1000); // Set timeout for better UI
   };// get select weather
   
   if (!weatherData ) {
-    return <ActivityIndicator size='large' color='#0000ff' />
-  }; // Render when we haven't any data from server
+    return (
+    <View style={styles.root}>
+        <LinearGradient colors={['rgba(2,0,36,1)','rgba(83,83,110,0)', 'rgba(0,255,236,0.35)', 'transparent']} style={styles.gradient}/>
+        <View style={styles.container}>
+             <ActivityIndicator size='large' color='#0000ff' />
+        </View>
+    </View>
+  )}; // Render when we haven't any data from server
   if (weatherData.cod === '404') {
     return (
       <View style={styles.root}>
-      <LinearGradient
-            colors={['rgba(2,0,36,1)','rgba(83,83,110,0)', 'rgba(0,255,236,0.35)', 'transparent']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: 1200,
-            }}
-          />
-      <ScrollView>
-      <View style={styles.container}>
+         <LinearGradient colors={['rgba(2,0,36,1)','rgba(83,83,110,0)', 'rgba(0,255,236,0.35)', 'transparent']} style={styles.gradient}/>
+         <ScrollView>
+            <View style={styles.container}>
                <Text style={styles.header}>
                     Населённый пункт не найдет!
                </Text>
                <Text style={styles.paragraph}>
-               Возможна ошибка при вводе.
+                    Возможна ошибка при вводе.
                </Text>
                <Text style={styles.paragraph}>
-               Вернитесь к началу и повторите попытку.
+                    Вернитесь к началу и повторите попытку.
                </Text>
-                   <Button title='Вернуться к началу' onPress={returnToStart} />
-      </View>
-      </ScrollView>
+                    <Button color='rgba(0, 50, 150, 0.6)' title='Вернуться к началу' onPress={returnToStart} />
+            </View>
+         </ScrollView>
       </View>                   
     )
   }; // Render when we get cod 404
   if (weatherData.cod === '400') {
     return (
       <View style={styles.root}>
-      <LinearGradient
-            colors={['rgba(2,0,36,1)','rgba(83,83,110,0)', 'rgba(0,255,236,0.35)', 'transparent']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: 1200,
-            }}
-          />
-      <ScrollView>
-      <View style={styles.container}>
+        <LinearGradient colors={['rgba(2,0,36,1)','rgba(83,83,110,0)', 'rgba(0,255,236,0.35)', 'transparent']} style={styles.gradient}/>
+        <ScrollView>
+          <View style={styles.container}>
                <Text style={styles.header}>
-                    Вы ничего не ввели!
+                   Вы ничего не ввели!
                </Text>
                <Text style={styles.paragraph}>
-               Вернитесь к началу и введите населённый пункт для поиска.
+                   Вернитесь к началу и введите населённый пункт для поиска.
                </Text>
-                   <Button title='Вернуться к началу' onPress={returnToStart} />
-      </View>
-      </ScrollView>
+                   <Button color='rgba(0, 50, 150, 0.6)' title='Вернуться к началу' onPress={returnToStart} />
+          </View>
+       </ScrollView>
       </View>                   
     )
   }; // Render when we get cod 400
 
   return (
-    <View style={styles.root}>
-      <LinearGradient
-            colors={['rgba(2,0,36,1)','rgba(83,83,110,0)', 'rgba(0,255,236,0.35)', 'transparent']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: 1200,
-            }}
-          />
+   <View style={styles.root}>
+      <LinearGradient colors={['rgba(2,0,36,1)','rgba(83,83,110,0)', 'rgba(0,255,236,0.35)', 'transparent']} style={styles.gradient}/>
       <ScrollView>
-      <View style={styles.container}>
-            <TextInput style={styles.header}
-            defaultValue={weatherData.name} 
-            onChangeText={text => setResponse(text)}
-            onSubmitEditing={(submit) => weatherCheck(submit)}
-            returnKeyType={"search"}
+        <View style={styles.container}>
+            <TextInput style={styles.input}
+                defaultValue={weatherData.name} 
+                onChangeText={text => setResponse(text)}
+                onSubmitEditing={(submit) => weatherCheck(submit)}
+                returnKeyType={"search"}
             /> 
-                <Text style={styles.paragraph}>
-                    Сейчас {weatherData.weather[0].description}
-                    <Image 
-                    style={styles.tinyLogo}
-                    source={{
-                    uri: `http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`,
-                    }} />
-                </Text>
+            <Text style={styles.paragraph}>
+                Сейчас {weatherData.weather[0].description}
+                <Image 
+                style={styles.tinyLogo}
+                source={{
+                uri: `http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`,
+                }} />
+            </Text>
             <Text style={styles.paragraph}>
                 Текущая температура {Math.round(weatherData.main.temp)} C° 
             </Text>
@@ -158,9 +124,9 @@ export default function App() {
             <Text style={styles.paragraph}>
                 Влажность {weatherData.main.humidity} %
             </Text>
-        </View>
-        </ScrollView>
-    </View>
+         </View>
+     </ScrollView>
+   </View>
   );
 }
 
@@ -180,12 +146,22 @@ const styles = StyleSheet.create({
   },
   
   tinyLogo: {
-    width: 50,
-    height: 50,
+    width: 30,
+    height: 30,
   },
 
   header: {
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    margin: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+  },
+
+  input: {
+    backgroundColor: 'rgba(250, 255, 255, 0.6)',
     borderRadius: 7,
     margin: 20,
     fontSize: 24,
@@ -200,5 +176,13 @@ const styles = StyleSheet.create({
     margin: 20,
     fontSize: 18,
     textAlign: 'center',
+  },
+
+  gradient: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      height: 1200,
   },
 });
